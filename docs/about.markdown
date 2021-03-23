@@ -5,7 +5,7 @@ permalink: /about/
 ---
 
 You can find the source code of my ideas at GitHub:
-[jekyll][github_url]
+[Lycycz][github_url]
 
 You can connect me at GitHub
 
