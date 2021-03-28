@@ -2,8 +2,6 @@
 layout: post
 title:  "SDL_OpenAudioDevice多线程创建出相同AudioDeviceId!"
 date:   2021-03-23 20:45:25 +0800
-tags: [jekyll]
-categories: jekyll
 ---
 ## 调用函数
 {% highlight c++ %}
