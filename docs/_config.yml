@@ -28,6 +28,11 @@ url: "lycycz.github.io" # the base hostname & protocol for your site, e.g. http:
 # twitter_username: jekyllrb
 github_username:  Lycycz
 
+timezone: "Asia/China"
+markdown: kramdown
+highlighter: rouge
+paginate: 5
+
 # Build settings
 theme: minima
 plugins:
