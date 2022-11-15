@@ -1,0 +1,16 @@
+I"5<p><a href="https://discourse.libsdl.org/t/couldnt-open-audio-device-no-available-audio-device/18499">Couldn’t open audio device: No available audio device</a></p>
+
+<h3 id="built-your-own-sdl">built your own SDL</h3>
+<p>If you built your own SDL, you probably didn’t have development headersfor PulseAudio (or ALSA), so it’s trying to use /dev/dsp, which doesn’texist on many modern Linux systems (hence, SDL_Init(SDL_INIT_AUDIO)succeeds, but no devices are found when you try to open one). “<code class="language-plaintext highlighter-rouge">apt-get install libasound2-dev libpulse-dev</code>” and rebuild SDL…let the configurescript find the new headers so it includes PulseAudio and ALSA support.</p>
+
+<h3 id="didnt-build-your-own-sdl">didn’t build your own SDL</h3>
+<p>If you didn’t build your own SDL, maybe you can force it to use adifferent audio path:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">SDL_AUDIODRIVER</span><span class="o">=</span>pulse ./mytestprogram</code></pre></figure>
+
+<p>or</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">SDL_AUDIODRIVER</span><span class="o">=</span>alsa ./mytestprogram</code></pre></figure>
+
+<p>One of those two solutions will (probably) fix your problem.</p>
+:ET

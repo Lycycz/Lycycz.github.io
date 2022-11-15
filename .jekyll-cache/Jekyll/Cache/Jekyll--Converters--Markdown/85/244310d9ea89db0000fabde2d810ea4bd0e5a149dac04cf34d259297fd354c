@@ -1,0 +1,48 @@
+I"�<h2 id="调用函数">调用函数</h2>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="n">SDL_AudioDeviceID</span> <span class="n">SDL_OpenAudioDevice</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span>          <span class="n">device</span><span class="p">,</span>
+                                      <span class="kt">int</span>                  <span class="n">iscapture</span><span class="p">,</span>
+                                      <span class="k">const</span> <span class="n">SDL_AudioSpec</span><span class="o">*</span> <span class="n">desired</span><span class="p">,</span>
+                                      <span class="n">SDL_AudioSpec</span><span class="o">*</span>       <span class="n">obtained</span><span class="p">,</span>
+                                      <span class="kt">int</span>                  <span class="n">allowed_changes</span><span class="p">)</span></code></pre></figure>
+
+<p>返回值<code class="language-plaintext highlighter-rouge">SDL_AudioDeviceID</code>,这个id不代表具体硬件设备，应该叫Session,即一个会话。</p>
+
+<p>网上的帖子详细解析: 
+<a href="http://www.libsdl.cn/bbs/forum.php?mod=viewthread&amp;tid=90]">源码解析</a></p>
+
+<h2 id="多线程出现的问题">多线程出现的问题</h2>
+
+<p>开启两个线程，同时调用函数，会导致返回会话id相同的情况或创建失败的情况。若对象封装后，在创建过程中出现相同id，在一个对象释放时close会导致崩溃的情况。</p>
+
+<h3 id="复现问题代码如下">复现问题代码如下</h3>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="nf">t1</span><span class="p">([](){</span>
+  <span class="kt">int</span> <span class="n">device_id</span> <span class="o">=</span> <span class="n">SDL_AudioDeviceID</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wanted_spec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="nf">t2</span><span class="p">([](){</span>
+  <span class="kt">int</span> <span class="n">device_id</span> <span class="o">=</span> <span class="n">SDL_AudioDeviceID</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wanted_spec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span></code></pre></figure>
+
+<p>两个线程同时开始，一般创建失败</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="nf">t1</span><span class="p">([](){</span>
+  <span class="kt">int</span> <span class="n">device_id</span> <span class="o">=</span> <span class="n">SDL_AudioDeviceID</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wanted_spec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="nf">t2</span><span class="p">([](){</span>
+  <span class="n">Sleep</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">device_id</span> <span class="o">=</span> <span class="n">SDL_AudioDeviceID</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wanted_spec</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span></code></pre></figure>
+
+<p>两个线程间隔300ms以下，一般创建出相同id。 
+间隔500ms以上，创建出两个id。</p>
+
+<h3 id="暂时的解决方法">暂时的解决方法</h3>
+
+<p>暂时的解决办法是，错开创建时间。</p>
+
+:ET
