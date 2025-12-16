@@ -1,0 +1,29 @@
+---
+layout: base
+---
+
+{% include header.html type="page" %}
+
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <div class="home">
+        <ul class="post-list">
+          {% assign posts_list = site.posts | sort: 'date' | reverse %}
+          {% for post in posts_list %}
+            <li>
+              <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+              <p class="post-meta">
+                <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+              </p>
+              {% if post.excerpt %}
+                <p>{{ post.excerpt | strip_html | truncate: 160 }}</p>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+

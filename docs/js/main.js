@@ -179,4 +179,19 @@ jQuery(document).ready(function($) {
               }
           });
   }
+
+  var savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('theme-dark');
+  }
+  function updateToggleText() {
+    var isDark = document.documentElement.classList.contains('theme-dark');
+    $('#theme-toggle').text(isDark ? '浅色' : '深色');
+  }
+  updateToggleText();
+  $(document).on('click', '#theme-toggle', function() {
+    var isDark = document.documentElement.classList.toggle('theme-dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateToggleText();
+  });
 });

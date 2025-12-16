@@ -38,6 +38,23 @@ paginate: 5
 theme: minima
 plugins:
   - jekyll-feed
+title-separator: "|"
+author:
+  name: Lyc
+page-col: "#ffffff"
+link-col: "#0b73ff"
+hover-col: "#0a5ad6"
+navbar-col: "#ffffff"
+navbar-text-col: "#333333"
+navbar-children-col: "#f7f7f7"
+footer-col: "#f8f9fa"
+footer-text-col: "#666666"
+footer-link-col: "#0b73ff"
+
+navbar-links:
+  首页: "/"
+  标签: "/tags"
+  分类: "/categories/"
 
 # Exclude from processing.
 # The following items will not be processed, by default.
